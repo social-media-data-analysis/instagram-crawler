@@ -12,7 +12,7 @@ def unique_rows(a):
     unique_a = np.unique(a.view([('', a.dtype)]*a.shape[1]))
     return unique_a.view(a.dtype).reshape((unique_a.shape[0], a.shape[1]))
 
-def outerInfo(hashtag, no_of_pagedowns):
+def outerInfo(hashtag, maxFeed):
     # 인스타그램 공식 홈페이지
     instagramHompage = 'https://www.instagram.com'
     
@@ -30,15 +30,18 @@ def outerInfo(hashtag, no_of_pagedowns):
     # 접속 URL의 body 부분 볼 것이다
     elem = browser.find_element_by_tag_name("body")
 
-    beforeNumOfFeed=0
-    afterNumOfFeed=1
+    # feed 가져온 개수    
+    numOfFeed=0
+    beforeOfFeed=0
+    numOfPageDown=0
     # URL 접속 후 PAGE DOWN 키 눌러(스크롤 내려서) 피드를 추가 로드
-    while beforeNumOfFeed != 42:
-        beforeNumOfFeed = afterNumOfFeed
+    while numOfFeed <= maxFeed:
         elem.send_keys(Keys.PAGE_DOWN) # PAGE DOWN Key 누름
         elem.send_keys(Keys.PAGE_DOWN)
-        time.sleep(0.5) # 누른 후 정보 불러오기 위한 대기시간 부여
-        no_of_pagedowns-=1 
+        elem.send_keys(Keys.PAGE_DOWN)
+        time.sleep(0.6) # 누른 후 정보 불러오기 위한 대기시간 부여
+        numOfPageDown = numOfPageDown + 1
+        
 
         # 지금까지 로드된 html 파싱
         html = browser.page_source
@@ -59,39 +62,22 @@ def outerInfo(hashtag, no_of_pagedowns):
                 tag\
                 ])
 
-        afterNumOfFeed = len(unique_rows(fullyinfofeed))
-
-    return fullyinfofeed
-    # p(fullyinfofeed)
-
-    # with open("result.json", "w") as file:
-    #     file.write(str(fullyinfofeed))
-    # p(fullyinfofeed[24])
-    # p(fullyinfofeed[25][8:-8])
-    # p(type(strdiv))
-
-    # t='fdhjdfg/p/Bta8BvhHq3C/dhjfg'
-    # p(feedLinkRe.findall(t))
-    # /p/BtVn-5Qna9a/
-    
-#     18. 속성이 있는지 확인
-# tag.has_attr('class') 
-# tag.has_attr('id')
-# 있으면 True, 없으면 False
-
-# for i in range(1,4):
-#     start_time = time.time()
-#     test=outerInfo('호에에에에엥',i)
-#     b = unique_rows(test)
-#     print("Num Of Pagedown", i,"\t: %d seconds" % (time.time() - start_time),"| Num of feed :",len(b))
+        # fullyinfofeed = unique_rows(fullyinfofeed)
+        numOfFeed = len(unique_rows(fullyinfofeed))
+        print("스크롤 다운 횟수 :",numOfPageDown, "피드 수 :",numOfFeed)
+        # if beforeOfFeed == numOfFeed:
+        #     print("#"+hashtag+"에 대한 모든 피드 "+str(numOfFeed)+"개를 찾았습니다.")
+        #     return fullyinfofeed
+        # else:
+        #     beforeOfFeed = numOfFeed
+    print("#"+hashtag+"에 대한 피드 "+str(numOfFeed)+"개를 찾았습니다.")
+    return unique_rows(fullyinfofeed)
 
 start_time = time.time()
-test=outerInfo('호에에에에엥',0)
-b = unique_rows(test)
-print("%d seconds" % (time.time() - start_time),"| Num of feed :",len(b))
+test=outerInfo('호에에에엥',288)
 
 
+for i in range(len(test)):
+    print(i,test[i])
 
-# pool = Pool(processes=4) # 4개의 프로세스를 사용합니다.
-# pool.map(useHashTag('빅데이터')) # get_contetn 함수를 넣어줍시다.
-
+print("%d seconds" % (time.time() - start_time),"| Num of feed :",len(test))
