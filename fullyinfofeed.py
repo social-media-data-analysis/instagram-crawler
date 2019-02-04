@@ -6,47 +6,60 @@ import time
 import re
 from selenium.webdriver.common.keys import Keys
 
-def useHashTag(hashtag):
+def outerInfo(hashtag, no_of_pagedowns):
+    # 인스타그램 공식 홈페이지
+    instagramHompage = 'https://www.instagram.com'
+    
+    # 긁어올 주소
     url = 'https://www.instagram.com/explore/tags/'+hashtag
+
+    # 크롬 드라이버 생성
     chromeDriverPath = '/home/sco/install/chrome/chromedriver'
     browser = driver.createDriver(chromeDriverPath, url)
-    time.sleep(1)
-    elem = browser.find_element_by_tag_name("body")
-    no_of_pagedowns = 2
- 
-    while no_of_pagedowns:
-        elem.send_keys(Keys.PAGE_DOWN)
-        time.sleep(0.2)
-        no_of_pagedowns-=1
+    time.sleep(1) # URL 접속 후 모든 정보 불러오기 위한 1초 대기시간 부여
 
+    # 접속 URL의 body 부분 볼 것이다
+    elem = browser.find_element_by_tag_name("body")
+
+    # URL 접속 후 PAGE DOWN 키 눌러(스크롤 내려서) 피드를 추가 로드
+    while no_of_pagedowns:
+        elem.send_keys(Keys.PAGE_DOWN) # PAGE DOWN Key 누름
+        elem.send_keys(Keys.PAGE_DOWN) # PAGE DOWN Key 누름
+        elem.send_keys(Keys.PAGE_DOWN) # PAGE DOWN Key 누름
+        time.sleep(0.5) # 누른 후 정보 불러오기 위한 대기시간 부여
+        no_of_pagedowns-=1 
+
+    # 지금까지 로드된 html 파싱
     html = browser.page_source
     soup = BeautifulSoup(html, 'html.parser')
     
-    divs=soup.find_all("div", attrs={'class':'v1Nh3 kIKUG _bz0w'})
+    # 파싱한 html에서 피드 관련 정보가 담긴 v1Nh3 kIKUG _bz0w div만 볼 것
+    divs=soup.find_all("div", attrs={'class':'v1Nh3 kIKUG _bz0w'}) 
+    
+    #인스타그램 정보 담을 리스트 선언
     fullyinfofeed=[]
     
+    # html에서 정보추출을 위한 정규표현식 선언 
     feedLinkRe=re.compile(r"/p/.{11}")
     tagRe=re.compile(r"img alt=\".*class=\"F")
-    # <img alt="Image may contain: 1 person"
+
     for div in divs:
-        # p(type(div))
-        # p(div.select('a'))
-        # strdiv.append(div.select('a'))
-        # strdiv.append(feedLinkRe.findall(str(div.select('a'))))
-        # p(div.get('href'))
-        div=str(div.select('a'))
-        # tag=re.sub('img alt="','',tagRe.findall(div))
-        tag=tagRe.findall(div)
-        fullyinfofeed.append([feedLinkRe.findall(div),tag])
-    p(fullyinfofeed)
+        div=str(div.select('a')) # instagram feed link
+        tag=str(tagRe.findall(div))[11:-12]
+        fullyinfofeed.append(\
+            [instagramHompage+feedLinkRe.findall(div)[0],\
+            tag\
+            ])
+
+    return fullyinfofeed
+    # p(fullyinfofeed)
+
+    # with open("result.json", "w") as file:
+    #     file.write(str(fullyinfofeed))
+    # p(fullyinfofeed[24])
+    # p(fullyinfofeed[25][8:-8])
     # p(type(strdiv))
-    # p(type(strdiv[0]))
-    # p(len(strdiv))
-    # p(len(strdiv[0]))
-    # p(strdiv)
-    # for test in strdiv[0]:
-    #     p(test)
-    # p(strdiv[0][0])
+
     # t='fdhjdfg/p/Bta8BvhHq3C/dhjfg'
     # p(feedLinkRe.findall(t))
     # /p/BtVn-5Qna9a/
@@ -56,20 +69,10 @@ def useHashTag(hashtag):
 # tag.has_attr('id')
 # 있으면 True, 없으면 False
 
-
-start_time = time.time()
-useHashTag('빅데이터')
+for i in range(40):
+    start_time = time.time()
+    test=outerInfo('빅데이터',i)
+    print("Num Of Pagedown", i,"\t: %d seconds" % (time.time() - start_time),"| Num of feed :",len(test))
 # pool = Pool(processes=4) # 4개의 프로세스를 사용합니다.
 # pool.map(useHashTag('빅데이터')) # get_contetn 함수를 넣어줍시다.
-print("--- %s seconds ---" % (time.time() - start_time))
 
-# //*[@id="react-root"]/section/main/article/div[2]/div/div[6]/div[1]/a
-#react-root > section > main > article > div:nth-child(3) > div > div:nth-child(1) > div:nth-child(2) > a
-#react-root > section > main > article > div:nth-child(3) > div > div:nth-child(6) > div:nth-child(1) > a
-#react-root > section > main > article > div:nth-child(3) > div > div:nth-child(7) > div:nth-child(3) > a
-
-# //*[@id="react-root"]/section/main/article/div[2]/div/div[7]/div[3]/a
-# //*[@id="react-root"]/section/main/article/div[2]/div/div[9]/div[3]/a
-
-#react-root > section > main > article > div:nth-child(3) > div > div:nth-child(1) > div:nth-child(1) > a
-#react-root > section > main > article > div:nth-child(3) > div > div:nth-child(11) > div:nth-child(3) > a

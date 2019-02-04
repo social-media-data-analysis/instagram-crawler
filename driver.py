@@ -22,7 +22,3 @@ def createDriver(chromeDriverPath, targetUrl):
     driver.execute_script("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function(parameter) {if (parameter === 37445) {return 'NVIDIA Corporation'} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';}return getParameter(parameter);};")
 
     return driver
-
-# driver=createDriver(r'/home/sco/install/chrome/chromedriver', 'http://m.sejong.ac.kr/front/cafeteria.do')
-# driver=createDriver()
-# print(os.system('pwd'))
