@@ -1,9 +1,3 @@
-# my add
-*.html
-*.txt
-test.py
-*.json
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -108,3 +102,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+test.py
+
+# my add
+*.html
+*.txt
+*.json

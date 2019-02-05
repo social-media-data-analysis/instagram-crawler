@@ -13,6 +13,28 @@ def unique_rows(a):
     return unique_a.view(a.dtype).reshape((unique_a.shape[0], a.shape[1]))
 
 def outerInfo(hashtag, maxFeed):
+    '''''''''''''''''''''''''''''''''''''''''''''''''''
+    Purpose
+        해스태그에 해당하는 피드의 링크와 태그를 가져온다.
+    
+    Tag ex>
+        Image may contain: screen, coffee cup and drink,
+        Image may contain: 2 people, indoor,
+        Image may contain: food
+        No photo description available
+
+    Input Format[
+        hashatg,    # <class 'str'> 어떤 키워드로 검색할지
+        maxFeed     # <class 'int'> 피드 최대 몇개 긁어올지
+    ]
+
+    Return Format[
+        fullyinfofeed[Url][Tag],    # <class 'numpy.ndarray'> 
+        runTime,                    # <class 'float'> 크롤링 소요 시간
+        lenFullyInfoFeed            # <class 'int'> 크롤링 한 피드 총 개수
+    ]
+    '''''''''''''''''''''''''''''''''''''''''''''''''''
+    start_time = time.time()
     # 인스타그램 공식 홈페이지
     instagramHompage = 'https://www.instagram.com'
     
@@ -74,17 +96,20 @@ def outerInfo(hashtag, maxFeed):
         # 피드를 추가적으로 불러오지 못했다면 다 불러온 것으로 판단
         if numOfFeed[-4] == numOfFeed[-1]:
             print("#"+hashtag+"에 대한 모든 피드 "+str(lenFullyInfoFeed)+"개를 찾았습니다.")
-            return unique_rows(fullyinfofeed)[:maxNumOfFeed]
+            return unique_rows(fullyinfofeed)
         else:
             numOfPageDown = numOfPageDown + 1
+
+    runTime = time.time() - start_time
     print("#"+hashtag+"에 대한 피드"+str(lenFullyInfoFeed)+"개를 찾았습니다.")
-    return unique_rows(fullyinfofeed)
+    print("%d seconds" % runTime,"| Num of feed :",lenFullyInfoFeed)
+    return [unique_rows(fullyinfofeed)[:maxNumOfFeed],runTime,lenFullyInfoFeed]
 
 start_time = time.time()
-maxNumOfFeed = 999
-fullyinfofeed = outerInfo('호에에에엥',999)
-fullyinfofeed
-print("%d seconds" % (time.time() - start_time),"| Num of feed :",len(fullyinfofeed))
-
-# s=[1,2,3,4,5,6,7]
-# print(s[-1])
+maxNumOfFeed = 30
+df = outerInfo('호에에에엥',maxNumOfFeed)
+p(df)
+p(type(df[0]))
+p(type(df[1]))
+p(type(df[2]))
+p(type(maxNumOfFeed))
