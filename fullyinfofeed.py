@@ -30,17 +30,21 @@ def outerInfo(hashtag, maxFeed):
     # 접속 URL의 body 부분 볼 것이다
     elem = browser.find_element_by_tag_name("body")
 
-    # feed 가져온 개수    
-    numOfFeed=0
+    
+    # 피드 몇개 가져왔는지 계속 체크 하고 여기에 계속 append
+    # 뒤에서 [-4]과 [-1] 비교해서 같으면 더 이상 찾을 것이 없다는 것으로 판단하고 결과반환
+    numOfFeed=[-3,-2,-1] 
+
+    # feed 가져온 개수
     beforeOfFeed=0
-    numOfPageDown=0
+    numOfPageDown=1
     # URL 접속 후 PAGE DOWN 키 눌러(스크롤 내려서) 피드를 추가 로드
-    while numOfFeed <= maxFeed:
+    while numOfFeed[-1] <= maxFeed:
         elem.send_keys(Keys.PAGE_DOWN) # PAGE DOWN Key 누름
         elem.send_keys(Keys.PAGE_DOWN)
         elem.send_keys(Keys.PAGE_DOWN)
         time.sleep(0.6) # 누른 후 정보 불러오기 위한 대기시간 부여
-        numOfPageDown = numOfPageDown + 1
+        
         
 
         # 지금까지 로드된 html 파싱
@@ -51,8 +55,8 @@ def outerInfo(hashtag, maxFeed):
         divs=soup.find_all("div", attrs={'class':'v1Nh3 kIKUG _bz0w'}) 
                
         # html에서 정보추출을 위한 정규표현식 선언 
-        feedLinkRe=re.compile(r"/p/.{11}")
-        tagRe=re.compile(r"img alt=\".*class=\"F")
+        feedLinkRe=re.compile(r"/p/.{11}") # URL of feed
+        tagRe=re.compile(r"img alt=\".*class=\"F") # Tag of feed
 
         for div in divs:
             div=str(div.select('a')) # instagram feed link
@@ -63,21 +67,24 @@ def outerInfo(hashtag, maxFeed):
                 ])
 
         # fullyinfofeed = unique_rows(fullyinfofeed)
-        numOfFeed = len(unique_rows(fullyinfofeed))
-        print("스크롤 다운 횟수 :",numOfPageDown, "피드 수 :",numOfFeed)
-        # if beforeOfFeed == numOfFeed:
-        #     print("#"+hashtag+"에 대한 모든 피드 "+str(numOfFeed)+"개를 찾았습니다.")
-        #     return fullyinfofeed
-        # else:
-        #     beforeOfFeed = numOfFeed
-    print("#"+hashtag+"에 대한 피드 "+str(numOfFeed)+"개를 찾았습니다.")
+        lenFullyInfoFeed = len(unique_rows(fullyinfofeed))
+        numOfFeed.append(lenFullyInfoFeed)
+        print("스크롤 다운 횟수 :",numOfPageDown, "피드 수 :",numOfFeed[-1])
+
+        # 피드를 추가적으로 불러오지 못했다면 다 불러온 것으로 판단
+        if numOfFeed[-4] == numOfFeed[-1]:
+            print("#"+hashtag+"에 대한 모든 피드 "+str(lenFullyInfoFeed)+"개를 찾았습니다.")
+            return unique_rows(fullyinfofeed)[:maxNumOfFeed]
+        else:
+            numOfPageDown = numOfPageDown + 1
+    print("#"+hashtag+"에 대한 피드"+str(lenFullyInfoFeed)+"개를 찾았습니다.")
     return unique_rows(fullyinfofeed)
 
 start_time = time.time()
-test=outerInfo('호에에에엥',288)
+maxNumOfFeed = 999
+fullyinfofeed = outerInfo('호에에에엥',999)
+fullyinfofeed
+print("%d seconds" % (time.time() - start_time),"| Num of feed :",len(fullyinfofeed))
 
-
-for i in range(len(test)):
-    print(i,test[i])
-
-print("%d seconds" % (time.time() - start_time),"| Num of feed :",len(test))
+# s=[1,2,3,4,5,6,7]
+# print(s[-1])

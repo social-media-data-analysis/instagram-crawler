@@ -1,6 +1,7 @@
 # my add
 *.html
 *.txt
+test.py
 *.json
 
 # Byte-compiled / optimized / DLL files
