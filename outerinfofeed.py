@@ -110,9 +110,9 @@ class OuterInfo():
         runTime = time.time() - self.start_time
         print("#"+self.hashtag+"에 대한 피드"+str(lenFullyInfoFeed)+"개를 찾았습니다.")
         print("%d seconds" % runTime,"| Num of feed :",lenFullyInfoFeed)
-        return [unique_rows(fullyinfofeed)[:maxNumOfFeed],runTime,lenFullyInfoFeed]
+        return [unique_rows(fullyinfofeed)[:self.maxFeed],runTime,lenFullyInfoFeed]
 
 if __name__ == "__main__":
-    maxNumOfFeed = 30
-    info = OuterInfo('호에에에엥',maxNumOfFeed)
+    maxNumOfFeed = 999
+    info = OuterInfo('호에엥',maxNumOfFeed)
     p(info.urlAndTag())
