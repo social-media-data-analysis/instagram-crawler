@@ -14,7 +14,7 @@ def unique_rows(a):
 
 class OuterInfo():
     def __init__(self, hashtag, maxFeed):
-        print("every body smile~")
+        print("--------해시태그 검색 시작--------")
         self.start_time = time.time()
         self.hashtag = hashtag
         self.maxFeed = maxFeed
