@@ -1,11 +1,11 @@
+from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 from pprint import pprint as p
 import driver
-from multiprocessing import Pool
 import time
 import numpy as np
 import re
-from selenium.webdriver.common.keys import Keys
+
 
 def unique_rows(a):
     a = np.ascontiguousarray(a)
