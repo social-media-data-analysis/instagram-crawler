@@ -4,7 +4,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 
-class InnerInfo():
+class MetaInfo():
     def __init__(self,url):
         print()
         print('--------피드 상세 정보 로드--------')
@@ -40,12 +40,6 @@ class InnerInfo():
         else:
             hashtagsInCommentFlag = 0
         
-        # print('id :',id)
-        # print('numOfLikes :',numOfLikes)
-        # print('numOfComments :',numOfComments)
-        # print('hashtags :',hashtags)
-        # print('hashtagsInCommentFlag :',hashtagsInCommentFlag)
-
         return [id, numOfLikes, numOfComments, hashtags, hashtagsInCommentFlag]
 
 def saveHtml(strHtml,filename):
@@ -59,9 +53,10 @@ if __name__ == "__main__":
     info = OuterInfo('호에엥',maxNumOfFeed)
     urlAndTag = info.urlAndTag()
     url = urlAndTag[0][4][0]
-    innerInfo = InnerInfo(url)
+    # metaInfo = MetaInfo(url)
     
-    all = innerInfo.all()
+    # all = metaInfo.all()
+    all = MetaInfo(url).all()
 
     print('url :', url)
     print('tag :',urlAndTag[0][4][1])
