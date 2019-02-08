@@ -3,12 +3,17 @@ from pprint import pprint as p
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
+import json
 
 class MetaInfo():
-    def __init__(self,url):
+    def __init__(self,_urlAndTag):
+
         print()
         print('--------피드 상세 정보 로드--------')
-        html = urlopen(url)
+
+        self.url = _urlAndTag[0]
+        self.tag = _urlAndTag[1]
+        html = urlopen(self.url)
         source = html.read()
         html.close()
         self.soup = BeautifulSoup(source,"html5lib")
@@ -39,32 +44,34 @@ class MetaInfo():
             hashtagsInCommentFlag = 1
         else:
             hashtagsInCommentFlag = 0
-        
-        return [id, numOfLikes, numOfComments, hashtags, hashtagsInCommentFlag]
 
-def saveHtml(strHtml,filename):
-    Html_file= open(filename,"w")
-    Html_file.write(strHtml)
-    Html_file.close()
+        strDateAndComment = self.soup.find('script', type='application/ld+json').text
+        print('?????????????????????????')
+        # strDateAndComment에서 date, 코멘트 추출하고 코멘트 다시 한글화 해줘야함.
+        print('?????????????????????????')
+        self.meta = {
+            'id' : id, # 작성자 ID
+            'numOfLikes' : numOfLikes, # 좋아요 수
+            'numOfComments' : numOfComments, #댓글 수
+            'hashtags' : hashtags, #본문 내 해시태그
+            'hashtagsInCommentFlag' : hashtagsInCommentFlag, # 본문에 해시태그가 없는 경우(댓글에 해시태그를 다는 경우가 있음)
+            'url' : self.url, # Url of feed
+            'tag' : self.tag # 피드의 첫번째 사진에 대한 설명
+        }
+        
+        return json.dumps(self.meta, ensure_ascii=False)
 
 if __name__ == "__main__":
 
-    maxNumOfFeed=5
+    maxNumOfFeed=3
     info = OuterInfo('호에엥',maxNumOfFeed)
-    urlAndTag = info.urlAndTag()
-    url = urlAndTag[0][4][0]
-    # metaInfo = MetaInfo(url)
-    
-    # all = metaInfo.all()
-    all = MetaInfo(url).all()
+    urlAndTags = info.urlAndTag()
+    urlAndTag = urlAndTags[0][0]
 
-    print('url :', url)
-    print('tag :',urlAndTag[0][4][1])
-    print('id :',all[0])
-    print('numOfLikes :',all[1])
-    print('numOfComments :',all[2])
-    print('hashtags :',all[3])
-    print('hashtagsInCommentFlag :',all[4])
+    # p(urlAndTag[0])
+    meta = MetaInfo(urlAndTag).all()
+    p(meta)
+    
 
 
 '''''''''''''''''''''
@@ -72,4 +79,3 @@ if __name__ == "__main__":
     필수 +ID, 일반내용, +해스태그내용, +numOfLike, linkOfPic
     ??? 덧글, 좋아요 사람들 계정, +댓글 수, 
 '''''''''''''''''''''
-
