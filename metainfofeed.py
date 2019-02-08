@@ -39,22 +39,19 @@ class MetaInfo():
         for metaHashtag in metaHashtags:
             hashtags.append(str(metaHashtag)[15:-31])
 
-        # hashtag를 글 본문이 아닌 댓글에 단 경우
-        if len(hashtags) == 0:
-            hashtagsInCommentFlag = 1
-        else:
-            hashtagsInCommentFlag = 0
-
         strDateAndComment = self.soup.find('script', type='application/ld+json').text
         print('?????????????????????????')
-        # strDateAndComment에서 date, 코멘트 추출하고 코멘트 다시 한글화 해줘야함.
+        p(type(strDateAndComment))
+        p(len(strDateAndComment))
+        p(strDateAndComment)
+        # strDateAndComment에서 date, 본문, 코멘트 추출하고 코멘트 다시 한글화 해줘야함.
         print('?????????????????????????')
         self.meta = {
             'id' : id, # 작성자 ID
             'numOfLikes' : numOfLikes, # 좋아요 수
             'numOfComments' : numOfComments, #댓글 수
             'hashtags' : hashtags, #본문 내 해시태그
-            'hashtagsInCommentFlag' : hashtagsInCommentFlag, # 본문에 해시태그가 없는 경우(댓글에 해시태그를 다는 경우가 있음)
+            'emptyHashtags' : bool(hashtags), # 본문에 해시태그가 없는 경우(댓글에 해시태그를 다는 경우가 있음)
             'url' : self.url, # Url of feed
             'tag' : self.tag # 피드의 첫번째 사진에 대한 설명
         }
