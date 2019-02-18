@@ -114,5 +114,5 @@ class OuterInfo():
 
 if __name__ == "__main__":
     maxNumOfFeed = 999
-    info = OuterInfo('호에엥',maxNumOfFeed)
+    info = OuterInfo('호에에에엥',maxNumOfFeed)
     p(info.urlAndTag())
