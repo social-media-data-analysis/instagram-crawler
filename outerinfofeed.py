@@ -52,8 +52,7 @@ class OuterInfo():
         fullyinfofeed=[]
 
         # 크롬 드라이버 생성
-        chromeDriverPath = '/home/sco/install/chrome/chromedriver'
-        browser = driver.createDriver(chromeDriverPath, url)
+        browser = driver.createDriver(url)
         time.sleep(1) # URL 접속 후 모든 정보 불러오기 위한 1초 대기시간 부여
 
         # 접속 URL의 body 부분 볼 것이다

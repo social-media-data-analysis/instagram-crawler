@@ -1,8 +1,31 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import os
+import os, sys
+import platform
 
-def createDriver(chromeDriverPath, targetUrl):
+# 실행자의 OS 맞는 크롬드라이버 반환
+def getChromeDriverPath():
+    osType = platform.system()
+
+    if osType == 'Drawin': # type of os is mac
+        return 'chromedriver/mac64_chromedriver'
+
+    elif osType == 'Linux': # type of os is linux
+        return 'chromedriver/linux64_chromedriver'
+
+    elif osType == 'Windows': # type of os is windows
+        return 'chromedriver/win32_chromedriver.exe'
+    
+    else:
+        return 0
+    
+def createDriver(targetUrl):
+
+    chromeDriverPath = getChromeDriverPath()
+    if not(chromeDriverPath):
+        print('Failed to check operating system type')
+        sys.exit(1) # OS 타입을 확인하지 못하면 프로그램 종료
+
     options = Options()
     #head less mode
     options.add_argument('--headless')
@@ -22,3 +45,6 @@ def createDriver(chromeDriverPath, targetUrl):
     driver.execute_script("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function(parameter) {if (parameter === 37445) {return 'NVIDIA Corporation'} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';}return getParameter(parameter);};")
 
     return driver
+
+
+
