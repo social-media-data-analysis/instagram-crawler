@@ -18,12 +18,17 @@ def faster(hashtag,maxNumOfFeed=10,filename='data.json',numOfProcess=1):
 
     # writeJson(pool.map(metainfofeed.metaInfo, info.urlAndTag()[0]))
 
-    with open('output_'+filename, 'w', encoding="utf-8") as make_file:
+    filename = 'output_'+filename
+    with open(filename, 'w', encoding="utf-8") as make_file:
         json.dump(pool.map(metainfofeed.metaInfo, info.urlAndTag()[0]), make_file, ensure_ascii=False, indent='\n')
+    
+    print('---------------------------------')
+    print('you can see result at <',filename,'>. go to check!')
 
     # p(t)
     runTime = time.time() - start_time
-    p(runTime)
+    print('total runtime is',runTime)
+
 #멀티프로세싱 적용한 크롤링 통해 시간 단축 예정
 if __name__ == "__main__":
-    faster('한국',filename='korea1.json', maxNumOfFeed=100,numOfProcess=4)
+    faster('한국',filename='korea11.json', maxNumOfFeed=100,numOfProcess=4)

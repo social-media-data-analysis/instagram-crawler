@@ -17,6 +17,10 @@ def metaInfo(_urlAndTag):
     tag = _urlAndTag[1]
     req = requests.get(url)
 
+
+    # url check
+    # 만들어야함. url 잘못넘어왔을때 에러날 수 있음.
+
     soup = BeautifulSoup(req.text,"html5lib")
     
     # saveHtml(str(soup),'html2.html')
@@ -50,9 +54,7 @@ def metaInfo(_urlAndTag):
         uploadDatetime = re.findall('\d{4}-\d{2}-\d{2}.*\d{2}:\d{2}:\d{2}', strDateAndComment)[0]
     except Exception as e:
         commentUsernames = ''
-        uploadDatetime = ''
-
-    
+        uploadDatetime = ''  
 
     # p(strDateAndComment.decode('euc-kr'))
     # strDateAndComment에서 date, 본문, 코멘트 추출하고 코멘트 다시 한글화 해줘야함.
