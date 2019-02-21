@@ -4,22 +4,27 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 import json
-import chardet
+import requests
 
+def saveHtml(body,filename):
+    f = open(filename, 'w')
+    f.write(body)
+    f.close
 
 def metaInfo(_urlAndTag):
     
     url = _urlAndTag[0]
     tag = _urlAndTag[1]
-    html = urlopen(url)
-    source = html.read()
-    html.close()
-    soup = BeautifulSoup(source,"html5lib")
-    
-    # saveHtml(str(soup),'html5.html')
+    req = requests.get(url)
 
-    metaDescription = str(soup.find("meta",  property="og:description"))
+    soup = BeautifulSoup(req.text,"html5lib")
     
+    # saveHtml(str(soup),'html2.html')
+
+    imageUrl = str(soup.find("meta",  property="og:image"))
+
+    metaDescription = str(soup.find("meta",  property="og:description"))  
+
     space = re.compile('[ ]+')
     # 좋아요 개수 긁어오기
     numOfLikes = space.split(re.findall(r"[0-9]* Likes",metaDescription)[0])[0] #findall이 list 형태 반환이기에 [0] 붙임
@@ -34,51 +39,52 @@ def metaInfo(_urlAndTag):
     for metaHashtag in metaHashtags:
         hashtags.append(str(metaHashtag)[15:-31])
     # print('-----type is',type(soup.find('script', type='application/ld+json')))
-
+    
     try:
         strDateAndComment = soup.find('script', type='application/ld+json').text
-        uploadDatetime = re.findall('\d{4}-\d{2}-\d{2}.*\d{2}:\d{2}:\d{2}', strDateAndComment)[0]
-    
         # 댓글 유저네임 긁어오기
         commentUsernames_parser = re.findall('"alternateName":"@.{1,30}","main', strDateAndComment) #유저네임 최대 길이 30임
         commentUsernames = []
         for commentUsername in commentUsernames_parser:
             commentUsernames.append(commentUsername[18:-7])
-        
-        # p(strDateAndComment.decode('euc-kr'))
-        # strDateAndComment에서 date, 본문, 코멘트 추출하고 코멘트 다시 한글화 해줘야함.
-        
-        meta = {
-            'id' : id, # 작성자 ID
-            'numOfLikes' : int(numOfLikes), # 좋아요 수
-            'numOfComments' : int(numOfComments), #댓글 수
-            'hashtags' : hashtags, #본문 내 해시태그
-            'emptyHashtags' : bool(hashtags), # 본문에 해시태그가 없는 경우(댓글에 해시태그를 다는 경우가 있음) false
-            'url' : url, # Url of feed
-            'tag' : tag, # 피드의 첫번째 사진에 대한 설명
-            'uploadDatetime' : uploadDatetime, #피드 업로드 시간
-            'commentUsernames' : commentUsernames
-        }
-        
-        return json.dumps(meta, ensure_ascii=False)
-    except:
-        meta = {
-            'type' : 'None'
-        }
-        return json.dumps(meta, ensure_ascii=False)
-    # strDateAndComment = soupFind.text
+        uploadDatetime = re.findall('\d{4}-\d{2}-\d{2}.*\d{2}:\d{2}:\d{2}', strDateAndComment)[0]
+    except Exception as e:
+        commentUsernames = ''
+        uploadDatetime = ''
+
+    
+
+    # p(strDateAndComment.decode('euc-kr'))
+    # strDateAndComment에서 date, 본문, 코멘트 추출하고 코멘트 다시 한글화 해줘야함.
+    
+    meta = {
+        'id' : id, # 작성자 ID
+        'numOfLikes' : int(numOfLikes), # 좋아요 수
+        'numOfComments' : int(numOfComments), #댓글 수
+        'hashtags' : hashtags, #본문 내 해시태그
+        'emptyHashtags' : bool(hashtags), # 본문에 해시태그가 없는 경우(댓글에 해시태그를 다는 경우가 있음) false
+        'url' : url, # Url of feed
+        'tag' : tag, # 피드의 첫번째 사진에 대한 설명
+        'uploadDatetime' : uploadDatetime, #피드 업로드 시간
+        'commentUsernames' : commentUsernames, # 댓글 단 유저 목록
+        'imageUrl' : imageUrl # 사진 url
+    }
+    return json.dumps(meta, ensure_ascii=False)
+    
 if __name__ == "__main__":
 
     print()
     print('--------피드 상세 정보 로드--------')
 
-    maxNumOfFeed=3
-    info = OuterInfo('호에엥',maxNumOfFeed)
-    urlAndTags = info.urlAndTag()
-    urlAndTag = urlAndTags[0][0]
+    # maxNumOfFeed=3
+    # info = OuterInfo('호에엥',maxNumOfFeed)
+    # urlAndTags = info.urlAndTag()
+    # urlAndTag = urlAndTags[0][0]
 
-    print('urlAndTag is', urlAndTag)
-    meta = metaInfo(urlAndTag)
+    # print('urlAndTag is', urlAndTag)
+    # meta = metaInfo(urlAndTag)
+    meta = metaInfo(['https://www.instagram.com/p/BuIG44LAc3Q','test'])
+    # meta = metaInfo(['https://www.instagram.com/p/BuIIkQCBECj','test'])
     p(meta)
 
 

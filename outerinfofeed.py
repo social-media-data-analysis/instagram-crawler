@@ -116,13 +116,14 @@ class OuterInfo():
 
         result = [unique_rows(fullyinfofeed)[:self.maxFeed],runTime,lenFullyInfoFeed]
 
-        resultJson = {
-            'maxFeed' : unique_rows(fullyinfofeed)[:self.maxFeed].tolist(),
-            'runTime' : runTime,
-            'lenFullyInfoFeed' : lenFullyInfoFeed
-        }
-        with open('output_outer'+self.filename, 'w', encoding="utf-8") as make_file:
-            json.dump(resultJson, make_file, ensure_ascii=False, indent='\t')
+        # 긁어온 링크와 사진 설명문 저장
+        # resultJson = {
+        #     'maxFeed' : unique_rows(fullyinfofeed)[:self.maxFeed].tolist(),
+        #     'runTime' : runTime,
+        #     'lenFullyInfoFeed' : lenFullyInfoFeed
+        # }
+        # with open('output_outer'+self.filename, 'w', encoding="utf-8") as make_file:
+        #     json.dump(resultJson, make_file, ensure_ascii=False, indent='\t')
 
         return result
 

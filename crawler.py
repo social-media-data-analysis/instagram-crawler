@@ -12,7 +12,6 @@ def writeJson(data, filename='data.json'):
 def faster(hashtag,maxNumOfFeed=10,filename='data.json',numOfProcess=1):
     start_time = time.time()
 
-    maxNumOfFeed = 30
     info = OuterInfo(hashtag,maxNumOfFeed,filename=filename)
     
     pool = Pool(processes=numOfProcess)
@@ -27,4 +26,4 @@ def faster(hashtag,maxNumOfFeed=10,filename='data.json',numOfProcess=1):
     p(runTime)
 #멀티프로세싱 적용한 크롤링 통해 시간 단축 예정
 if __name__ == "__main__":
-    faster('맛집',filename='data3.json', maxNumOfFeed=30,numOfProcess=1)
+    faster('한국',filename='korea1.json', maxNumOfFeed=100,numOfProcess=4)
