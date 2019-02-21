@@ -5,6 +5,7 @@ import driver
 import time
 import numpy as np
 import re
+import json
 
 
 def unique_rows(a):
@@ -13,11 +14,12 @@ def unique_rows(a):
     return unique_a.view(a.dtype).reshape((unique_a.shape[0], a.shape[1]))
 
 class OuterInfo():
-    def __init__(self, hashtag, maxFeed):
+    def __init__(self, hashtag, maxFeed, filename='data.json'):
         print("--------해시태그 검색 시작--------")
         self.start_time = time.time()
         self.hashtag = hashtag
         self.maxFeed = maxFeed
+        self.filename = filename
 
     def urlAndTag(self):
         '''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -109,7 +111,20 @@ class OuterInfo():
         runTime = time.time() - self.start_time
         print("#"+self.hashtag+"에 대한 피드"+str(lenFullyInfoFeed)+"개를 찾았습니다.")
         print("%d seconds" % runTime,"| Num of feed :",lenFullyInfoFeed)
-        return [unique_rows(fullyinfofeed)[:self.maxFeed],runTime,lenFullyInfoFeed]
+
+        unique_rows(fullyinfofeed)[:self.maxFeed],runTime,lenFullyInfoFeed
+
+        result = [unique_rows(fullyinfofeed)[:self.maxFeed],runTime,lenFullyInfoFeed]
+
+        resultJson = {
+            'maxFeed' : unique_rows(fullyinfofeed)[:self.maxFeed].tolist(),
+            'runTime' : runTime,
+            'lenFullyInfoFeed' : lenFullyInfoFeed
+        }
+        with open('output_outer'+self.filename, 'w', encoding="utf-8") as make_file:
+            json.dump(resultJson, make_file, ensure_ascii=False, indent='\t')
+
+        return result
 
 if __name__ == "__main__":
     maxNumOfFeed = 999

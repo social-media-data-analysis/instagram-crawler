@@ -3,24 +3,28 @@ from outerinfofeed import OuterInfo
 from pprint import pprint as p
 import metainfofeed
 import time
+import json
 # from metainfofeed import MetaInfo
-def pr(p):
-    print('!!!!!!!!!!!!!!!!!!!!')
-    print(p)
+def writeJson(data, filename='data.json'):
+    with open(filename, 'w', encoding="utf-8") as make_file:
+        json.dump(data, make_file, ensure_ascii=False)
 
-#멀티프로세싱 적용한 크롤링 통해 시간 단축 예정
-if __name__ == "__main__":
+def faster(hashtag,maxNumOfFeed=10,filename='data.json',numOfProcess=1):
     start_time = time.time()
 
     maxNumOfFeed = 30
-    info = OuterInfo('호에엥',maxNumOfFeed)
+    info = OuterInfo(hashtag,maxNumOfFeed,filename=filename)
     
-    pool = Pool(processes=4)
-    
-    # result = pool.map(lambda x: MetaInfo().all() , OuterInfo('호에엥',5).urlAndTag()[0])
-    # print(p.map(f, info.urlAndTag())
+    pool = Pool(processes=numOfProcess)
 
+    # writeJson(pool.map(metainfofeed.metaInfo, info.urlAndTag()[0]))
 
-    t=pool.map(metainfofeed.metaInfo, info.urlAndTag()[0])
-    p(t)
+    with open('output_'+filename, 'w', encoding="utf-8") as make_file:
+        json.dump(pool.map(metainfofeed.metaInfo, info.urlAndTag()[0]), make_file, ensure_ascii=False, indent='\n')
+
+    # p(t)
     runTime = time.time() - start_time
+    p(runTime)
+#멀티프로세싱 적용한 크롤링 통해 시간 단축 예정
+if __name__ == "__main__":
+    faster('맛집',filename='data3.json', maxNumOfFeed=30,numOfProcess=1)
