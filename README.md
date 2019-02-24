@@ -3,7 +3,6 @@ Instagram crawler using Python for research data collection
 
 # Installation
 
-----
 
 ```sh
 $ git clone https://github.com/schio/instagram-crawler.git
@@ -14,7 +13,6 @@ $ pip install -r requirements.txt
 
 # Usage
 
-----------------
 
 **How to use**
 
@@ -76,7 +74,6 @@ meta = {
 
 # Help
 
-------------
 
 ```python crawler.py -h
 $ python crawler.py -h

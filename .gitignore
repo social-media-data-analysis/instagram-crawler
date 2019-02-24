@@ -107,3 +107,4 @@ test.py
 # my add
 *.html
 *.json
+output_*
