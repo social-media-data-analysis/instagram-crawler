@@ -5,6 +5,7 @@ import driver
 import time
 import numpy as np
 import re
+import json
 
 
 def unique_rows(a):
@@ -13,16 +14,17 @@ def unique_rows(a):
     return unique_a.view(a.dtype).reshape((unique_a.shape[0], a.shape[1]))
 
 class OuterInfo():
-    def __init__(self, hashtag, maxFeed):
+    def __init__(self, hashtag, maxFeed, filename):
         print("--------해시태그 검색 시작--------")
         self.start_time = time.time()
         self.hashtag = hashtag
         self.maxFeed = maxFeed
+        self.filename = str(filename)
 
     def urlAndTag(self):
         '''''''''''''''''''''''''''''''''''''''''''''''''''
         Purpose
-            해스태그에 해당하는 피드의 링크와 태그를 가져온다.
+            해시태그에 해당하는 피드의 링크와 태그를 가져온다.
         
         Tag ex>
             Image may contain: screen, coffee cup and drink,
@@ -52,8 +54,7 @@ class OuterInfo():
         fullyinfofeed=[]
 
         # 크롬 드라이버 생성
-        chromeDriverPath = '/home/sco/install/chrome/chromedriver'
-        browser = driver.createDriver(chromeDriverPath, url)
+        browser = driver.createDriver(url)
         time.sleep(1) # URL 접속 후 모든 정보 불러오기 위한 1초 대기시간 부여
 
         # 접속 URL의 body 부분 볼 것이다
@@ -110,9 +111,18 @@ class OuterInfo():
         runTime = time.time() - self.start_time
         print("#"+self.hashtag+"에 대한 피드"+str(lenFullyInfoFeed)+"개를 찾았습니다.")
         print("%d seconds" % runTime,"| Num of feed :",lenFullyInfoFeed)
-        return [unique_rows(fullyinfofeed)[:self.maxFeed],runTime,lenFullyInfoFeed]
 
-if __name__ == "__main__":
-    maxNumOfFeed = 999
-    info = OuterInfo('호에에에엥',maxNumOfFeed)
-    p(info.urlAndTag())
+        unique_rows(fullyinfofeed)[:self.maxFeed],runTime,lenFullyInfoFeed
+
+        result = [unique_rows(fullyinfofeed)[:self.maxFeed],runTime,lenFullyInfoFeed]
+
+        # 긁어온 링크와 사진 설명문 저장
+        resultJson = {
+            'urlAndTagOfFeeds' : unique_rows(fullyinfofeed)[:self.maxFeed].tolist(),
+            'runTime' : runTime,
+            'lenFullyInfoFeed' : lenFullyInfoFeed
+        }
+        with open('output_outer'+self.filename, 'w', encoding="utf-8") as make_file:
+            json.dump(resultJson, make_file, ensure_ascii=False, indent='\t')
+
+        return result
