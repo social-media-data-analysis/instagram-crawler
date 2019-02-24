@@ -14,17 +14,17 @@ def unique_rows(a):
     return unique_a.view(a.dtype).reshape((unique_a.shape[0], a.shape[1]))
 
 class OuterInfo():
-    def __init__(self, hashtag, maxFeed, filename='data.json'):
+    def __init__(self, hashtag, maxFeed, filename):
         print("--------해시태그 검색 시작--------")
         self.start_time = time.time()
         self.hashtag = hashtag
         self.maxFeed = maxFeed
-        self.filename = filename
+        self.filename = str(filename)
 
     def urlAndTag(self):
         '''''''''''''''''''''''''''''''''''''''''''''''''''
         Purpose
-            해스태그에 해당하는 피드의 링크와 태그를 가져온다.
+            해시태그에 해당하는 피드의 링크와 태그를 가져온다.
         
         Tag ex>
             Image may contain: screen, coffee cup and drink,
@@ -118,7 +118,7 @@ class OuterInfo():
 
         # 긁어온 링크와 사진 설명문 저장
         resultJson = {
-            'maxFeed' : unique_rows(fullyinfofeed)[:self.maxFeed].tolist(),
+            'urlAndTagOfFeeds' : unique_rows(fullyinfofeed)[:self.maxFeed].tolist(),
             'runTime' : runTime,
             'lenFullyInfoFeed' : lenFullyInfoFeed
         }
@@ -126,8 +126,3 @@ class OuterInfo():
             json.dump(resultJson, make_file, ensure_ascii=False, indent='\t')
 
         return result
-
-if __name__ == "__main__":
-    maxNumOfFeed = 999
-    info = OuterInfo('호에에에엥',maxNumOfFeed)
-    p(info.urlAndTag())
