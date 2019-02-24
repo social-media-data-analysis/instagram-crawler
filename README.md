@@ -44,17 +44,17 @@ total runtime is 51.16804623603821
 **Two files are created.
 First, output_outer <filename>**
 
-```json
-Return Format[
+```python
+resultJson = {
 	fullyinfofeed[Url][Tag],    # <class 'numpy.ndarray'> 
 	runTime,                    # <class 'float'> 크롤링 소요 시간
 	lenFullyInfoFeed            # <class 'int'> 크롤링 한 피드 총 개수
-]
+}
 ```
 
 **The second, output_ <filename>**
 
-```json
+```python
 meta = {
 	'id',                   # <class 'str'>
 	'numOfLikes',           # <class 'int'>
@@ -75,7 +75,7 @@ meta = {
 # Help
 
 
-```python crawler.py -h
+```sh
 $ python crawler.py -h
 usage: crawler.py [-h] Hashtag Filename maxNumOfFeed numOfProcess
 
