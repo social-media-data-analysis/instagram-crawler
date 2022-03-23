@@ -6,6 +6,7 @@ Instagram crawler using Python for research data collection
 
 ```sh
 $ git clone https://github.com/schio/instagram-crawler.git
+$ cd instagram-crawler 
 $ pip install -r requirements.txt
 ```
 
